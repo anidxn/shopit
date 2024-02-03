@@ -1,0 +1,268 @@
+{% extends 'base.html' %}
+
+{% block title %} About us {% endblock title %}
+
+{% block style %}
+
+@media (min-width: 1025px) {
+.h-custom {
+height: 100vh !important;
+}
+}
+
+.card-registration .select-input.form-control[readonly]:not([disabled]) {
+font-size: 1rem;
+line-height: 2.15;
+padding-left: .75em;
+padding-right: .75em;
+}
+
+.card-registration .select-arrow {
+top: 13px;
+}
+
+.bg-grey {
+background-color: #eae8e8;
+}
+
+@media (min-width: 992px) {
+.card-registration-2 .bg-grey {
+border-top-right-radius: 16px;
+border-bottom-right-radius: 16px;
+}
+}
+
+@media (max-width: 991px) {
+.card-registration-2 .bg-grey {
+border-bottom-left-radius: 16px;
+border-bottom-right-radius: 16px;
+}
+}
+{% endblock style %}
+
+{% block content %}
+<!-- Header-->
+<!--<header class="bg-dark py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="text-center text-white">
+            <h1 class="display-4 fw-bolder">Your Cart</h1>
+            <p class="lead fw-normal text-white-50 mb-0">Have a look at your shopping list</p>
+        </div>
+    </div>
+</header> -->
+
+<!-- =========== loading custom built filters ============== -->
+{% load pj_filters %}
+
+{% if cart_products %}
+<section class="h-100 h-custom" style="background-color: #d2c9ff;">
+    <div class="container py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-12">
+                <div class="card card-registration card-registration-2" style="border-radius: 15px;">
+                    <div class="card-body p-0">
+                        <div class="row g-0">
+                            <div class="col-lg-8">
+                                <div class="p-5">
+                                    <!-- ============ summary ===============-->
+                                    <div class="d-flex justify-content-between align-items-center mb-5">
+                                        <h1 class="fw-bold mb-0 text-black">Shopping Cart</h1>
+                                        <h6 class="mb-0 text-muted"><span id="itemqty">{{ mycart|length }}</span> items</h6>
+                                    </div>
+
+                                    <!-- ============ listing ================-->
+                                    {% for product in cart_products %}
+
+                                    <div id="prod_div_{{product.id}}">
+
+                                    <hr class="my-4">
+
+                                    <div class="row mb-4 d-flex justify-content-between align-items-center">
+                                        <div class="col-md-2 col-lg-2 col-xl-2">
+                                            <img src="{{ product.p_image.url }}"
+                                                class="img-fluid rounded-3" alt="Cotton T-shirt">
+                                        </div>
+                                        <div class="col-md-3 col-lg-3 col-xl-3">
+                                            <h6 class="text-muted">{{ product.p_cat|upper }}</h6>
+                                            <h6 class="text-black mb-0">{{ product.p_name }}</h6>
+                                        </div>
+                                        <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
+                                            <button class="btn btn-link px-2"
+                                                onclick="this.parentNode.querySelector('input[type=number]').stepDown()">
+                                                <i class="fas fa-minus"></i>
+                                            </button>
+
+                                            <!-- * * * * use of custom filter to get data from dictionary using product id as key-->
+
+                                            <input type="number" min="0" value="{{ cart_qnty|getval_by_key:product.id }}" 
+                                                name="txtQnty_{{product.id}}" id="txtQnty_{{product.id}}" class="form-control form-control-sm" />
+
+                                            <button class="btn btn-link px-2"
+                                                onclick="this.parentNode.querySelector('input[type=number]').stepUp()">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </div>
+                                        <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
+                                            {% if product.is_on_sale %}
+                                            <h6 class="mb-0">₹ {{ product.sale_price }}</h6>  <!-- Show sale price only-->
+                                            {% else %}
+                                            <h6 class="mb-0">₹ {{ product.p_price }}</h6>
+                                            {% endif %}
+                                        </div>
+                                        <div class="col-md-1 col-lg-1 col-xl-1 text-end">
+                                            <!--<a href="#!" class="text-muted"><i class="fas fa-times"></i></a>-->
+                                            <button type="button" class="btn btn-danger btn-sm delcart" data-pid="{{ product.id }}"
+                                                data-mdb-toggle="tooltip" title="Remove item"><i class="fas fa-trash"></i></button>
+
+                                            <button type="button" class="btn btn-primary btn-sm updcart"  
+                                                data-pid="{{ product.id }}" ><i class="fas fa-pencil"></i></button>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                                {% endfor %}
+                                    
+
+<!--                                    <hr class="my-4">
+
+                                    <div class="pt-5">
+                                        <h6 class="mb-0"><a href="#!" class="text-body"><i
+                                                    class="fas fa-long-arrow-alt-left me-2"></i>Back to shop</a></h6>
+                                    </div>
+                                -->
+                                </div>
+                            </div>
+                            <!-- ============ Price summary =============-->
+                            <div class="col-lg-4 bg-grey">
+                                <div class="p-5">
+                                    <h3 class="fw-bold mb-5 mt-2 pt-1">Summary</h3>
+                                    <hr class="my-4">
+
+                                    <div class="d-flex justify-content-between mb-4">
+                                        <h5 class="text-uppercase">Cost : </h5>
+                                        <h5>₹ <span id="price"> {{ cart_total }} </span></h5>
+                                    </div>
+
+                                    <h5 class="text-uppercase mb-3">Shipping</h5>
+
+                                    <div class="mb-4 pb-2">
+                                        <select class="select">
+                                            <option value="0">Standard-Delivery- ₹0.00</option>
+                                            <option value="100">Two days - ₹100.00</option>
+                                            <option value="50">Three - ₹50.00</option>
+                                            <option value="25">Four - ₹25.00</option>
+                                        </select>
+                                    </div>
+
+                                    <h5 class="text-uppercase mb-3">Give code</h5>
+
+                                    <div class="mb-5">
+                                        <div class="form-outline">
+                                            <input type="text" id="form3Examplea2"
+                                                class="form-control form-control-lg" />
+                                            <label class="form-label" for="form3Examplea2">Enter your code</label>
+                                        </div>
+                                    </div>
+
+                                    <hr class="my-4">
+
+                                    <div class="d-flex justify-content-between mb-5">
+                                        <h5 class="text-uppercase">Total price</h5>
+                                        <h5>€ 137.00</h5>
+                                    </div>
+
+                                    <!-- <button type="button" class="btn btn-dark btn-block btn-lg"
+                                        data-mdb-ripple-color="dark">Register</button> -->
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% else %}
+<div class="container py-4">
+<div class="row">
+    <center>
+        <div class="col-8">
+            <img src="/static/images/cart_empty.png" />
+        </div>
+    </center>
+</div>
+</div>
+
+{% endif %}
+
+{{ cart_qnty }}
+
+<script>
+    $(document).ready(function() {
+        $("button.updcart").on("click", function() {
+            var id = $(this).data("pid");
+
+            var qt = $('#txtQnty_'+id+'').val();
+            //var qt = $('#txtQnty_2').val();
+            //console.log(id +  ' >> ' + qt);
+
+            $.ajax({
+                url :  "{% url 'cart-update' %}",
+                type : "POST",
+                data : {
+                    product_id : id,
+                    product_qty : qt,
+                    csrfmiddlewaretoken : '{{ csrf_token }}', 
+                },
+                dataType : "json",
+                
+                success : function(data) {
+                    // * * * * update the pricing * * * *
+                    $('#cart_qty').html(data.qty); /* update in navbar cart icon */
+                    $('#itemqty').html(data.qty);
+                    $('#price').html(data.cart_total);
+                },
+    
+                error : function(xhr, errmsg, err){
+                    alert(errmsg)
+                }
+            });
+
+
+        });
+
+        /*------ delete function -------*/
+        $("button.delcart").on("click", function() {
+            var id = $(this).data("pid");
+            
+            $.ajax({
+                url :  "{% url 'cart-delete' %}",
+                type : "POST",
+                data : {
+                    product_id : id,
+                    csrfmiddlewaretoken : '{{ csrf_token }}', 
+                },
+                dataType : "json",
+                
+                success : function(data) {
+                    // console.log(data);
+                    //location.reload();
+                    $('#cart_qty').html(data.qty) /* update in navbar cart icon */
+                    $('#itemqty').html(data.qty);
+                    $('#price').html(data.cart_total);
+                    $('#prod_div_'+id+'').remove();
+                },
+    
+                error : function(xhr, errmsg, err){
+                    alert(errmsg)
+                }
+            });
+
+        })
+    });
+
+
+</script>
+
+{% endblock content %}
