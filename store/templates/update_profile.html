@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block title %} Profile {% endblock title %}
+
+{% block content %}
+
+
+<!-- banner-->
+
+<header class="bg-dark py-3">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="text-center text-white">
+            <h1 class="display-4 fw-bolder">Profile</h1>
+            <p class="lead fw-normal text-white-50 mb-0">Update your profile details here</p>
+        </div>
+    </div>
+</header>
+
+<!--
+<div class="container-fluid px-0 mb-3">
+    <img src="/static/images/reg.jpeg" class="d-block w-100" alt="...">
+</div>-->
+
+<div class="container py-4">
+
+    {% comment %} {% if form.errors %}
+        {% for error in form.errors %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            error
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    {% endif %} {% endcomment %}
+
+    {% if form.errors %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            There was some error with your form data
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      
+    {% endif %}
+
+
+    <div class="shadow p-4 mb-5 bg-body rounded">
+
+    <h1>Profile Update</h1>
+    <form action="" method="post">
+
+        {% csrf_token %}
+
+        {{ form.as_p }} 
+        
+
+        <button type="submit" class="btn btn-primary">Sign up</button>
+    </form>
+</div>
+</div>
+
+
+{% endblock content %}

@@ -32,3 +32,6 @@ class UserRegisterForm(UserCreationForm):
 
         self.fields['password1'].widget.attrs['class'] = 'form-control'
         self.fields['password2'].widget.attrs['class'] = 'form-control'
+
+class ProfileUpdateForm:
+    pass

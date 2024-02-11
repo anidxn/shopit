@@ -80,4 +80,8 @@ def register_user(request):
     myform = UserRegisterForm()
     return render(request, 'register.html', {'form' : myform})
 
+#------------ update the profile ----------------
+def update_profile(request):
+    pass
+
 

@@ -24,7 +24,7 @@
                         <i class="fas fa-user fa-sm"></i> {{ user }}
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="{%url 'prodbycat' 'Books'%}">Profile</a></li>
+                        <li><a class="dropdown-item" href="{% url 'update-profile'%}">Profile</a></li>
                         <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
                     </ul>
                 </li>
