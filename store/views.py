@@ -1,9 +1,9 @@
 from django.shortcuts import redirect, render
-from . models import Product, Category
+from . models import Product, Category, Profile
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 
-from .forms import UserRegisterForm
+from .forms import UserRegisterForm, ProfileUpdateForm
 
 # Create your views here.
 
@@ -82,6 +82,21 @@ def register_user(request):
 
 #------------ update the profile ----------------
 def update_profile(request):
-    pass
+    
+    if request.user.is_authenticated:
+        current_user = Profile.objects.get(user__id = request.user.id) # * * * * Get Data from table based on User table Pkey -- 1to1 Map
+        myform = ProfileUpdateForm(request.POST or None, instance = current_user) 
+        if request.method == "POST":
+            if myform.is_valid():  # validate the form
+                myform.save()
+                messages.success(request, "Profile update successfull")
+                return redirect('home')
+            else:
+                #  * * * * * * * * error message handling * * * * * * * * * *
+                for error in list(myform.errors.values()):
+                    messages.warning(request, error)
+                return redirect('update-profile')
+        else:   # load page with existing details
+            return render(request, 'update_profile.html', {'form' : myform})
 
 

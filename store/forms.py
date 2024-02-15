@@ -3,10 +3,11 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
+from .models import Profile
+
 #==============================================
 # REF: User-Authentication Application
 #=============================================
-
 class UserRegisterForm(UserCreationForm):
     email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder' : 'something@django.com'}))
     first_name = forms.CharField(max_length=50, 
@@ -33,5 +34,18 @@ class UserRegisterForm(UserCreationForm):
         self.fields['password1'].widget.attrs['class'] = 'form-control'
         self.fields['password2'].widget.attrs['class'] = 'form-control'
 
-class ProfileUpdateForm:
-    pass
+# ***********************************************************
+# PROFILE UPDATE : linked to USER details object
+# ***********************************************************
+class ProfileUpdateForm(forms.ModelForm):
+    phone = forms.CharField(label = "", widget = forms.TextInput(attrs = {'class': 'form-control', 'placeholder' : 'Phone'}), required=False) # ***
+    address1 = forms.CharField(label = "", widget = forms.TextInput(attrs = {'class': 'form-control', 'placeholder' : 'Address line 1 '}), required=False) # ***
+    address2 = forms.CharField(label = "", widget = forms.TextInput(attrs = {'class': 'form-control', 'placeholder' : 'Address line 2'}), required=False) # ***
+    city = forms.CharField(label = "", widget = forms.TextInput(attrs = {'class': 'form-control', 'placeholder' : 'City'}), required=False) # ***
+    state = forms.CharField(label = "", widget = forms.TextInput(attrs = {'class': 'form-control', 'placeholder' : 'State'}), required=False) # ***
+    zipcode = forms.CharField(label = "", widget = forms.TextInput(attrs = {'class': 'form-control', 'placeholder' : 'Zipcode'}), required=False) # ***
+    country = forms.CharField(label = "", widget = forms.TextInput(attrs = {'class': 'form-control', 'placeholder' : 'Country'}), required=False) # ***
+
+    class Meta:
+        model = Profile
+        fields = ('phone', 'address1', 'address2', 'city', 'state', 'zipcode', 'country')
