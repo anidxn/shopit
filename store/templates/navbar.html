@@ -5,7 +5,7 @@
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                <li class="nav-item"><a class="nav-link active" aria-current="page" href="#!">Home</a></li>
+                <li class="nav-item"><a class="nav-link active" aria-current="page" href="{% url 'home' %}">Home</a></li>
                 <li class="nav-item"><a class="nav-link" href="{% url 'about-us' %}">About</a></li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Shop</a>
@@ -32,23 +32,17 @@
                 {% else %}
                 <li class="nav-item"><a class="nav-link" href="{% url 'login' %}"><i class="fas fa-sign-in fa-sm"></i> Sign in</a></li>
                 {% endif %}
-                
+
             </ul>
-            <!--
-            <form class="d-flex">
-                <button class="btn btn-outline-dark" type="submit">
-                    <i class="bi-cart-fill me-1"></i>
-                    Cart
-                    <span class="badge bg-dark text-white ms-1 rounded-pill" id="cart_qty">
-                        0
-                    </span>
-                </button>
+            
+            <form class="d-flex" role="search" action="{% url 'search-prod' %}" method="POST">
+                {% csrf_token %}
+                <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" name="txtSearch">
+                <button class="btn btn-outline-primary" type="submit"><i class="fas fa-search"></i></button> &nbsp;
             </form>
-            -->
 
             <a class="btn btn-outline-dark" href="{% url 'cart-summary' %}">
-                <i class="bi-cart-fill me-1"></i>
-                    Cart
+                <i class="bi-cart-fill me-1"></i> Cart
                 <span class="badge bg-dark text-white ms-1 rounded-pill" id="cart_qty">
                     {{ mycart|length }}  <!-- * * * * * * gets the cart object from session & calls the len() function & returns the value -->
                 </span>

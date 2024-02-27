@@ -1,10 +1,12 @@
 # a simple class file to contain our Beans class
 
-from store.models import Product
+from store.models import Product, Profile
 
 class Cart:
     def __init__(self, request):  # request is required to get the current session
         self.session = request.session
+        # get 
+        self.request = request
 
         # get current session key if exists (for loged in user)
         cart = self.session.get('session_key')  # getting the session id
@@ -17,7 +19,7 @@ class Cart:
         self.cart = cart
 
     #------------- add item to cart -------------
-    def add(self, added_product, prod_qty):
+    def add_item(self, added_product, prod_qty):
         product_id = str(added_product.id)
         product_qnty = str(prod_qty)
 
@@ -32,6 +34,16 @@ class Cart:
             # Why don't we store the entire object??? => keep session light weight
         
         self.session.modified = True  #session object is modified due to addition of new data
+
+        # ---- store cart to db (if logged in)----
+        if self.request.user.is_authenticated :
+            curr_user = Profile.objects.filter(user__id = self.request.user.id)  # * *  Get record from 1-to-1 mapping user__id
+            # covert {'3': 1, '2': 4} -> {"3": 1, "2": 4} for JSon bcz json doesnt use single '
+            strcart = str(self.cart)   # convert dict -> str
+            strcart = strcart.replace("\'", "\"")  # replace quotes
+            # save to db
+            curr_user.update(old_cart = strcart) # update just 1 column
+
 
     # ---- returns number of objects in cart ---
     def __len__(self):

@@ -8,7 +8,7 @@ from django.http import JsonResponse
 
 # --------show cart summary.---------
 def cart_summary(request):
-    # Grab exiusting cart
+    # Grab existing cart
     cart = Cart(request)
     cart_products = cart.get_prod_list
     cart_qnty = cart.get_prod_qntities   # prts {prodid : qnty} dictionary
@@ -29,7 +29,7 @@ def cart_add(request):
         sel_prod = get_object_or_404(Product, id = prodid)
         
         # save to session; here entire object is passed so that you may add whichever fields u want. not just product id
-        mycart.add(added_product = sel_prod, prod_qty= qnty)
+        mycart.add_item(added_product = sel_prod, prod_qty= qnty)
 
         # get the cart quantity...just to update the cart value in navbar
         cart_quantity = len(mycart)

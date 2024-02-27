@@ -5,8 +5,11 @@ from django.contrib import messages
 
 from .forms import UserRegisterForm, ProfileUpdateForm
 
-# Create your views here.
+# ----- for ilike with OR in query------
+from django.db.models import Q
 
+
+################### VIEWS #######################
 def home(request):
     prod_list = Product.objects.all()
     #pcat_list = Category.objects.all()
@@ -33,6 +36,19 @@ def product_by_cat(request, catname):
 
 def aboutpage(request):
     return render(request, 'about.html')
+
+
+def search_item(request):
+    if request.method == "POST":
+        #------ filter records from db using ORM -------
+        searched_itm = request.POST['txtSearch']
+        
+        prod_list = Product.objects.filter(Q(p_name__icontains = searched_itm) | Q(p_desc__icontains = searched_itm))      # * * Query with OR operator * *
+
+        if not prod_list:
+            messages.warning(request, "Searched product not found")
+        # ----- reuse the product category page  --------
+        return render(request, 'product_by_category.html', {'products': prod_list, 'sel_category' : searched_itm})
 
 #---------------------------------------------------
 #           Authentication section

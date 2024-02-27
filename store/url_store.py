@@ -11,4 +11,5 @@ urlpatterns = [
     path('logout/', views.logout_user, name='logout'),
     path('product/<int:pk>', views.product_detail, name='product'),
     path('prodbycat/<str:catname>', views.product_by_cat, name='prodbycat'),
+     path('searchprod/', views.search_item, name = 'search-prod'),       # search from the nav bar
 ]

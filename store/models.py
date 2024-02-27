@@ -70,6 +70,9 @@ class Profile(models.Model):
     state = models.CharField(max_length = 50, blank = True)
     zipcode = models.CharField(max_length = 8)
     country = models.CharField(max_length = 8, blank = True)
+    #--- field for persistent cart (to be stored in DB)---
+    old_cart = models.CharField(max_length = 400, blank=True) # dictionary converted to string for storage using JSON
+
 
     def __str__(self):
         return self.user.username
