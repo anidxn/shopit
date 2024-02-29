@@ -7,6 +7,10 @@ from .forms import UserRegisterForm, ProfileUpdateForm
 
 # ----- for ilike with OR in query------
 from django.db.models import Q
+# --- convert json string to dictionary -----
+import json 
+
+from cart.cart import Cart # from app.module import class
 
 
 ################### VIEWS #######################
@@ -57,15 +61,29 @@ def login_user(request):
     if request.method == "POST":
         uname = request.POST['txtUName']
         passwd = request.POST['txtPass']
-        print(uname, ' == ', passwd )
-
+        
         myuser = authenticate(request, username = uname, password = passwd) # model / table has columns named username & password
 
         if myuser is not None: # credentials found
             login(request, myuser)
             messages.success(request, 'Welcoome back - ' + myuser.username)
+
+            # ---- UPDATE shopping cart from DB ----
+            # get profile of logged in USER
+            usr_profile = Profile.objects.get(user__id = myuser.id)
+            # get saved cart items from DB
+            saved_cart = usr_profile.old_cart
+            # convert JSO string to Dictionary
+            if saved_cart:
+                saved_cart = json.loads(saved_cart)  # ******* loads() => converts
+                # get the session cart object
+                pcart = Cart(request)
+                # add the cart data to session
+                for key, val in saved_cart.items():
+                    pcart.update_cart_from_db(product_id=key, product_qnty=val)
+
             return redirect('home')
-            #return render(request, 'dashboard.html', {'emp_name': ename})
+            #return render(request, 'dashboard.html', {'emp_name': ename}) xxxx
         else:
             messages.warning(request, "Bad credentials")
             return redirect('home')

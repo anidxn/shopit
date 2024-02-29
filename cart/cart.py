@@ -21,7 +21,7 @@ class Cart:
     #------------- add item to cart -------------
     def add_item(self, added_product, prod_qty):
         product_id = str(added_product.id)
-        product_qnty = str(prod_qty)
+        product_qnty = prod_qty
 
         # if the product is already added
         if product_id in self.cart:
@@ -35,7 +35,7 @@ class Cart:
         
         self.session.modified = True  #session object is modified due to addition of new data
 
-        # ---- store cart to db (if logged in)----
+        # ---- for PERSISTENT CART: store cart to db (if logged in)----
         if self.request.user.is_authenticated :
             curr_user = Profile.objects.filter(user__id = self.request.user.id)  # * *  Get record from 1-to-1 mapping user__id
             # covert {'3': 1, '2': 4} -> {"3": 1, "2": 4} for JSon bcz json doesnt use single '
@@ -44,6 +44,17 @@ class Cart:
             # save to db
             curr_user.update(old_cart = strcart) # update just 1 column
 
+    def update_cart_from_db(self, product_id, product_qnty):
+        self.cart[product_id] = int(product_qnty)        
+        self.session.modified = True
+
+        # this section req. bcz without login we added in cart & then logged in ..then these mus be added to old cart items
+        if self.request.user.is_authenticated :
+            curr_user = Profile.objects.filter(user__id = self.request.user.id)  
+            strcart = str(self.cart)   # convert dict -> str
+            strcart = strcart.replace("\'", "\"")  # replace quotes
+            # save to db
+            curr_user.update(old_cart = strcart)
 
     # ---- returns number of objects in cart ---
     def __len__(self):
@@ -82,6 +93,14 @@ class Cart:
 
         self.session.modified = True  # ???
 
+        # ---- for PERSISTENT CART: store cart to db (if logged in)----
+        if self.request.user.is_authenticated :
+            curr_user = Profile.objects.filter(user__id = self.request.user.id)  
+            strcart = str(self.cart)   # convert dict -> str
+            strcart = strcart.replace("\'", "\"")  # replace quotes
+            # save to db
+            curr_user.update(old_cart = strcart)
+
     # ---- deleting an item from cart ------
     def deleteItem(self, product_id):
         product_id = str(product_id)
@@ -91,6 +110,14 @@ class Cart:
             del self.cart[product_id]
 
         self.session.modified = True
+
+        # ---- for PERSISTENT CART: store cart to db (if logged in)----
+        if self.request.user.is_authenticated :
+            curr_user = Profile.objects.filter(user__id = self.request.user.id)  
+            strcart = str(self.cart)   # convert dict -> str
+            strcart = strcart.replace("\'", "\"")  # replace quotes
+            # save to db
+            curr_user.update(old_cart = strcart)
 
     # ----- getting total price of all items ----
     def totalPrice(self):
